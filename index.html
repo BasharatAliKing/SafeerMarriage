@@ -18,6 +18,12 @@
       .ev { max-width: 560px; margin: 0 auto; padding: 46px 0; border-top: 1px solid #ffffff22; }
       .ev:first-of-type { border-top: 0; }
       .ev .big { font-size: clamp(36px, 9vw, 54px); letter-spacing: .06em; margin: 6px 0 10px; font-family: "Cormorant Garamond", serif; }
+      .scratch { width: min(240px, 66vw); }
+      .u { padding: 6% 0 18%; }
+      .u .r { display: flex; align-items: baseline; gap: 8px; line-height: 1.25; }
+      .u .r b { font-size: 26px; font-weight: 500; min-width: 2.1em; text-align: right; }
+      .u .r span { font-size: 15px; font-style: italic; min-width: 4.2em; text-align: left; }
+      .u .my { font-family: Montserrat, sans-serif; font-size: 8px; letter-spacing: .22em; text-transform: uppercase; font-style: normal; font-weight: 600; margin-top: 6px; }
     </style>
   </head>
   <body>
@@ -42,8 +48,7 @@
         ],
         whatsapp: "923041214513",
         // ===== ALL EVENT CARDS (edit / add / remove freely) =====
-        // NOTE: Mehndi & Barat details are PLACEHOLDERS - replace with the real ones.
-        events: [
+                events: [
           {
             name: "Mehndi",
             tag: "Night Function",
@@ -58,7 +63,7 @@
             tag: "Day Function",
             date: "21 November 2026",
             venue: "Ahmed Madinah Marquee",
-            address: "Siranwali Road, Near Qamar Rice Mill, Khotary, Wahndo",
+            address: "Ahmed Madinah Marquee Wahndo Guranwala",
             mapUrl: "https://maps.app.goo.gl/zkEfPehoHxC34X819?g_st=ic",
             times: [["Sehra Bandi", "10:00 AM"], ["Departure BARAT", "11:00 AM"]],
           },
@@ -136,7 +141,7 @@
       <div class="lb">Save the date</div>
       <h2 style="margin-top: 10px">A Day of Celebration</h2>
       <p style="font-style: italic; font-size: 14px; color: #7a6652">
-        Scratch the heart to uncover the day.
+        Scratch the heart to uncover the days.
       </p>
       <svg width="0" height="0" style="position: absolute">
         <clipPath id="heart" clipPathUnits="objectBoundingBox">
@@ -147,21 +152,14 @@
       </svg>
       <div class="scratch">
         <div class="in">
-          <div class="u">
-            <b id="dd"></b><span id="m"></span
-            ><span id="y" style="font-size: 11px"></span>
-          </div>
+          <div class="u" id="hu"></div>
           <canvas
             id="scr"
             aria-label="Scratch the heart to reveal the date"
           ></canvas>
         </div>
       </div>
-      <div
-        class="lb"
-        style="color: #8a7a68; font-size: 7px"
-        data-t="eventUp"
-      ></div>
+      <div class="lb" id="evnames" style="color: #8a7a68; font-size: 7px"></div>
       <div class="bigm" id="bm"></div>
     </section>
 
@@ -315,9 +313,6 @@
         .querySelectorAll("[data-p]")
         .forEach((i) => (i.src = C.photos[i.dataset.p] || ""));
       document.title = `${C.name} — ${C.eventName} Invitation`;
-      $("#dd").textContent = C.dateText[0];
-      $("#m").textContent = C.dateText[1];
-      $("#y").textContent = C.dateText[2];
       $("#bm").innerHTML =
         `${C.dateText[1].toUpperCase()}<div class="yr">${C.dateText[2].slice(0, 2)} <b>${C.dateText[2].slice(2)}</b></div>`;
       const eh = (s) => String(s).replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
@@ -334,6 +329,14 @@
           <a class="link" href="${eh(e.mapUrl)}" target="_blank" rel="noopener">VIEW LOCATION ↗</a>
         </article>`)
         .join("");
+      // Heart: show every event date (day numbers are read from CONFIG.events)
+      const ord = (n) =>
+        n + (["th", "st", "nd", "rd"][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10 < 4 ? n % 10 : 0]);
+      $("#hu").innerHTML =
+        C.events
+          .map((e) => `<div class="r"><b>${ord(parseInt(e.date))}</b><span>${eh(e.name)}</span></div>`)
+          .join("") + `<div class="my">${eh(C.dateText[1])} ${eh(C.dateText[2])}</div>`;
+      $("#evnames").textContent = C.events.map((e) => e.name.toUpperCase()).join(" · ");
       $("#wa").href = "https://wa.me/" + C.whatsapp;
 
      const cv = $("#cover");
